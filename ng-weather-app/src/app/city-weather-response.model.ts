@@ -45,10 +45,11 @@ export type CityWeatherResponse = {
 };
 
 export type CityWeather = {
+  id: string;
   city: string;
   state: string;
   country: string;
-  temperature: number;
+  temperature: string;
   weather: string[];
   lon: number;
   lat: number;

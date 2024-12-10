@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import {
   Component,
   DestroyRef,
@@ -10,8 +9,7 @@ import {
 import { FormsModule, NgForm } from '@angular/forms';
 import { debounceTime, filter, map } from 'rxjs';
 
-import { environment } from '../../environment/environment';
-import { City, CityResponse } from './city.model';
+import { City } from './city.model';
 import { CityWeatherService } from '../city-weather.service';
 
 @Component({
@@ -37,7 +35,9 @@ export class CitySearchComponent implements OnInit {
         map((value) => value.city)
       )
       .subscribe((value) => {
+        console.log('value', value);
         this.cityWeatherServie.getCities(value).subscribe((values: City[]) => {
+          console.log('values', values);
           this.citySearchVariants.set(values);
         });
       });
@@ -49,5 +49,7 @@ export class CitySearchComponent implements OnInit {
 
   addCityToDashboard(city: City): void {
     this.cityWeatherServie.getCityWeather(city);
+    this.form()?.setValue({ city: '' });
+    this.citySearchVariants.set([]);
   }
 }

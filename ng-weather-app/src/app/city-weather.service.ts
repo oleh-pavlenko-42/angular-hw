@@ -12,7 +12,8 @@ import { environment } from '../environment/environment';
 export class CityWeatherService {
   private httpClient = inject(HttpClient);
 
-  cities = new BehaviorSubject<CityWeather[]>([]);
+  citiesSubject = new BehaviorSubject<CityWeather[]>([]);
+  cities: CityWeather[] = [];
 
   getCities(cityName: string): Observable<City[]> {
     return this.httpClient
@@ -37,21 +38,21 @@ export class CityWeatherService {
 
   getCityWeather(city: City): void {
     const { lat, lon } = city;
-    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${environment.apiKey}`;
+    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${environment.apiKey}&units=metric`;
     this.httpClient.get<CityWeatherResponse>(url).subscribe((response) => {
-      this.cities.subscribe((cities) => {
-        const newCityWeather: CityWeather = {
-          city: city.name,
-          state: city.state,
-          country: city.country,
-          temperature: response.main.temp,
-          weather: response.weather.map((weather) => weather.icon),
-          lon: response.coord.lon,
-          lat: response.coord.lat,
-        };
-        const newCitiesWeather = [...cities, newCityWeather];
-        this.cities.next(newCitiesWeather);
-      });
+      const newCityWeather: CityWeather = {
+        id: city.id,
+        city: city.name,
+        state: city.state,
+        country: city.country,
+        temperature: `${response.main.temp}℃`,
+        weather: response.weather.map((weather) => weather.icon),
+        lon: response.coord.lon,
+        lat: response.coord.lat,
+      };
+      const newCitiesWeather = [...this.cities, newCityWeather];
+      this.cities = [...newCitiesWeather];
+      this.citiesSubject.next(newCitiesWeather);
     });
   }
 }
