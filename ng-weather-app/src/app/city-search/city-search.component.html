@@ -1,0 +1,13 @@
+<form #form="ngForm">
+  <input type="text" name="city" placeholder="City name" ngModel>
+</form>
+@if (citySearchVariants().length) {
+<div class="city-option-list">
+  @for (city of citySearchVariants(); track city.id) {
+  <div class="city-option">
+    <button class="add-button" (click)="addCityToDashboard(city)"></button>
+    <p>{{city.name}}, {{city.state}}, {{city.country}}</p>
+  </div>
+  }
+</div>
+}
