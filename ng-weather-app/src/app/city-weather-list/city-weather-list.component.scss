@@ -1,7 +1,19 @@
 :host {
   display: grid;
-  grid-template-columns: 33% 33% 33%;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 16px;
   margin-top: 24px;
   width: 100%;
+}
+
+@media (max-width: 768px) {
+  :host {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 431px) {
+  :host {
+    grid-template-columns: 1fr;
+  }
 }

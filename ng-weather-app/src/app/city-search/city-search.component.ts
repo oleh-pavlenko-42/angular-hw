@@ -31,13 +31,18 @@ export class CitySearchComponent implements OnInit {
     const geoSub = this.form()
       ?.valueChanges?.pipe(
         debounceTime(250),
-        filter((value) => value.city.length >= 3),
         map((value) => value.city)
       )
-      .subscribe((value) => {
-        this.cityWeatherServie.getCities(value).subscribe((values: City[]) => {
-          this.citySearchVariants.set(values);
-        });
+      .subscribe((cityStr: string) => {
+        if (cityStr.length >= 3) {
+          this.cityWeatherServie
+            .getCities(cityStr)
+            .subscribe((values: City[]) => {
+              this.citySearchVariants.set(values);
+            });
+        } else {
+          this.citySearchVariants.set([]);
+        }
       });
     this.destroyRef.onDestroy(() => {
       geoSub?.unsubscribe();
