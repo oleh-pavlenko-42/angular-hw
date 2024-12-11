@@ -1,7 +1,7 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { CityWeather } from '../city-weather-response.model';
+import { Component, inject, OnInit } from '@angular/core';
 import { CityWeatherService } from '../city-weather.service';
 import { CityWeatherCardComponent } from './city-weather-card/city-weather-card.component';
+import { City } from '../city-search/city.model';
 
 @Component({
   selector: 'app-city-weather-list',
@@ -13,11 +13,11 @@ import { CityWeatherCardComponent } from './city-weather-card/city-weather-card.
 export class CityWeatherListComponent implements OnInit {
   private cityWeatherService = inject(CityWeatherService);
 
-  cities = signal<CityWeather[]>([]);
+  cities: City[] = [];
 
   ngOnInit(): void {
     this.cityWeatherService.citiesSubject.subscribe((cities) => {
-      this.cities.set(cities);
+      this.cities = cities;
     });
   }
 }

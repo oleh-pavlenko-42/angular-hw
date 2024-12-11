@@ -1,28 +1,56 @@
-import { Component, computed, inject, input } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 import { CityWeather } from '../../city-weather-response.model';
 import { CityWeatherService } from '../../city-weather.service';
+import { City } from '../../city-search/city.model';
+import { delay } from 'rxjs';
+import { LoadingSpinnerComponent } from '../../shared/loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'app-city-weather-card',
-  imports: [],
+  imports: [LoadingSpinnerComponent],
   standalone: true,
   templateUrl: './city-weather-card.component.html',
   styleUrl: './city-weather-card.component.scss',
 })
 export class CityWeatherCardComponent {
-  cityWeatherService = inject(CityWeatherService);
+  private cityWeatherService = inject(CityWeatherService);
 
-  city = input.required<CityWeather>();
-  weatherImgs = computed(() => {
-    return this.city().weather.map((weatherImg) => {
-      return `https://openweathermap.org/img/wn/${weatherImg}.png`;
-    });
+  isLoading = signal(false);
+  city = input<City>();
+  cityWeahter = signal<CityWeather | null>(null);
+  weatherImg = computed(() => {
+    if (this.cityWeahter()) {
+      return {
+        src: `https://openweathermap.org/img/wn/${
+          this.cityWeahter()?.weather[0].src
+        }.png`,
+        alt: this.cityWeahter()?.weather[0].alt,
+      };
+    }
+    return null;
   });
 
-  removeFromDashboard(cityToRemove: CityWeather): void {
-    this.cityWeatherService.citiesSubject.subscribe((cities) => {
-      const newCities = cities.filter((city) => city.id !== cityToRemove.id);
-      this.cityWeatherService.citiesSubject.next(newCities);
+  constructor() {
+    effect(() => {
+      this.isLoading.set(true);
+      this.cityWeatherService
+        .getCityWeather(this.city()!)
+        .pipe(delay(2000))
+        .subscribe((cityWeahter: CityWeather) => {
+          this.cityWeahter.set(cityWeahter);
+          this.isLoading.set(false);
+        });
     });
+  }
+
+  removeFromDashboard(cityToRemove: City): void {
+    this.cityWeatherService.removeCityFromDashboard(cityToRemove);
   }
 }

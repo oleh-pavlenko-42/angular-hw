@@ -1,5 +1,7 @@
 :host {
-  display: flex;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: 33% 33% 33%;
+  gap: 16px;
   margin-top: 24px;
+  width: 100%;
 }

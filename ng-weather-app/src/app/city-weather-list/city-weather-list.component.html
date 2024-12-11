@@ -1,3 +1,5 @@
-@for (city of cities(); track city.id) {
+@if (cities.length >= 0) {
+@for (city of cities; track city.id) {
 <app-city-weather-card [city]="city" />
+}
 }

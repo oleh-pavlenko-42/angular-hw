@@ -12,8 +12,16 @@ import { environment } from '../environment/environment';
 export class CityWeatherService {
   private httpClient = inject(HttpClient);
 
-  citiesSubject = new BehaviorSubject<CityWeather[]>([]);
-  cities: CityWeather[] = [];
+  citiesSubject = new BehaviorSubject<City[]>([]);
+  cities: City[] = [];
+
+  constructor() {
+    const citiesItem = localStorage.getItem('cities');
+    if (citiesItem) {
+      this.cities = [...JSON.parse(citiesItem)];
+      this.citiesSubject.next([...this.cities]);
+    }
+  }
 
   getCities(cityName: string): Observable<City[]> {
     return this.httpClient
@@ -36,23 +44,44 @@ export class CityWeatherService {
       );
   }
 
-  getCityWeather(city: City): void {
+  addCityToDashboard(city: City): void | false {
+    if (
+      !this.cities.filter((cityItem: City) => cityItem.id === city.id).length
+    ) {
+      const newCities = [...this.cities, city];
+      this.cities = [...newCities];
+      this.citiesSubject.next([...newCities]);
+      localStorage.setItem('cities', JSON.stringify([...newCities]));
+    }
+  }
+
+  getCityWeather(city: City): Observable<CityWeather> {
+    console.log('getCityWeather', city);
     const { lat, lon } = city;
     const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${environment.apiKey}&units=metric`;
-    this.httpClient.get<CityWeatherResponse>(url).subscribe((response) => {
-      const newCityWeather: CityWeather = {
-        id: city.id,
-        city: city.name,
-        state: city.state,
-        country: city.country,
-        temperature: `${response.main.temp}℃`,
-        weather: response.weather.map((weather) => weather.icon),
-        lon: response.coord.lon,
-        lat: response.coord.lat,
-      };
-      const newCitiesWeather = [...this.cities, newCityWeather];
-      this.cities = [...newCitiesWeather];
-      this.citiesSubject.next(newCitiesWeather);
-    });
+    return this.httpClient.get<CityWeatherResponse>(url).pipe(
+      map((response) => {
+        const newCityWeather: CityWeather = {
+          id: city.id,
+          city: city.name,
+          state: city.state,
+          country: city.country,
+          temperature: `${response.main.temp}℃`,
+          weather: response.weather.map((weather) => ({
+            src: weather.icon,
+            alt: weather.main,
+          })),
+          lon: response.coord.lon,
+          lat: response.coord.lat,
+        };
+        return newCityWeather;
+      })
+    );
+  }
+
+  removeCityFromDashboard(cityToRemove: City): void {
+    this.cities = this.cities.filter((city) => cityToRemove.id !== city.id);
+    this.citiesSubject.next([...this.cities]);
+    localStorage.setItem('cities', JSON.stringify([...this.cities]));
   }
 }

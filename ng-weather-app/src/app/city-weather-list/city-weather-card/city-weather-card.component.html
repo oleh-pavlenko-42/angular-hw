@@ -1,13 +1,17 @@
 <div class="city-weather-card">
-  @for (weatherImg of weatherImgs(); track weatherImg) {
-  <img [src]="weatherImg" alt="">
+  @if (!isLoading()) {
+  @if (weatherImg()) {
+  <img [src]="weatherImg()?.src" [alt]="weatherImg()?.alt">
   }
   <p>
-    Location: {{city().city}},
-    @if (city().state) {
-    {{city().state}},
+    Location: {{cityWeahter()!.city}},
+    @if (cityWeahter()!.state) {
+    {{cityWeahter()!.state}},
     }
-    {{city().country}}</p>
-  <p>Temperature: {{city().temperature}}</p>
-  <button class="remove-button" (click)="removeFromDashboard(city())"></button>
+    {{cityWeahter()!.country}}</p>
+  <p>Temperature: {{cityWeahter()!.temperature}}</p>
+  <button class="remove-button" (click)="removeFromDashboard(city()!)"></button>
+  } @else {
+  <app-loading-spinner />
+  }
 </div>

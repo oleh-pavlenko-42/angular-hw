@@ -35,20 +35,17 @@ export class CitySearchComponent implements OnInit {
         map((value) => value.city)
       )
       .subscribe((value) => {
-        console.log('value', value);
         this.cityWeatherServie.getCities(value).subscribe((values: City[]) => {
-          console.log('values', values);
           this.citySearchVariants.set(values);
         });
       });
-
     this.destroyRef.onDestroy(() => {
       geoSub?.unsubscribe();
     });
   }
 
   addCityToDashboard(city: City): void {
-    this.cityWeatherServie.getCityWeather(city);
+    this.cityWeatherServie.addCityToDashboard(city);
     this.form()?.setValue({ city: '' });
     this.citySearchVariants.set([]);
   }

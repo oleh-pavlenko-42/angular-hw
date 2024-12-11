@@ -50,7 +50,10 @@ export type CityWeather = {
   state: string;
   country: string;
   temperature: string;
-  weather: string[];
+  weather: {
+    src: string;
+    alt: string;
+  }[];
   lon: number;
   lat: number;
 };
