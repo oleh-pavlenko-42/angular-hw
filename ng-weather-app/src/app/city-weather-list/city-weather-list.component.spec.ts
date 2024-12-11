@@ -36,7 +36,6 @@ describe('CityWeatherListComponent', () => {
     await TestBed.configureTestingModule({
       imports: [CityWeatherListComponent],
       providers: [
-        { provide: CityWeatherCardComponent, useValue: {} },
         { provide: CityWeatherService, useValue: cityWeatherService },
       ],
     }).compileComponents();
