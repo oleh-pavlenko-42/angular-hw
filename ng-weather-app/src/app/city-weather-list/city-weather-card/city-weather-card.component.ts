@@ -9,7 +9,6 @@ import {
 import { CityWeather } from '../../city-weather-response.model';
 import { CityWeatherService } from '../../city-weather.service';
 import { City } from '../../city-search/city.model';
-import { delay } from 'rxjs';
 import { LoadingSpinnerComponent } from '../../shared/loading-spinner/loading-spinner.component';
 
 @Component({
@@ -23,7 +22,7 @@ export class CityWeatherCardComponent {
   private cityWeatherService = inject(CityWeatherService);
 
   isLoading = signal(false);
-  city = input<City>();
+  city = input.required<City>();
   cityWeahter = signal<CityWeather | null>(null);
   weatherImg = computed(() => {
     if (this.cityWeahter()) {
@@ -41,8 +40,7 @@ export class CityWeatherCardComponent {
     effect(() => {
       this.isLoading.set(true);
       this.cityWeatherService
-        .getCityWeather(this.city()!)
-        .pipe(delay(2000))
+        .getCityWeather(this.city())
         .subscribe((cityWeahter: CityWeather) => {
           this.cityWeahter.set(cityWeahter);
           this.isLoading.set(false);

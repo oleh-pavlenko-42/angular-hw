@@ -56,7 +56,6 @@ export class CityWeatherService {
   }
 
   getCityWeather(city: City): Observable<CityWeather> {
-    console.log('getCityWeather', city);
     const { lat, lon } = city;
     const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${environment.apiKey}&units=metric`;
     return this.httpClient.get<CityWeatherResponse>(url).pipe(
