@@ -7,7 +7,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import { debounceTime, filter, map } from 'rxjs';
+import { debounceTime, map } from 'rxjs';
 
 import { City } from './city.model';
 import { CityWeatherService } from '../city-weather.service';
