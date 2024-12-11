@@ -1,0 +1,24 @@
+:host {
+  position: absolute;
+  bottom: 48px;
+}
+
+.alert {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 360px;
+  padding: 14px 16px;
+  background-color: #ffdad6;
+  box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2),
+    0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
+  button {
+    font-weight: bold;
+    height: 22px;
+    color: #ba1a1a;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+  }
+}

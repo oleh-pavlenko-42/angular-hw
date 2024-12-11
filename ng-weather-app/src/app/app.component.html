@@ -1,4 +1,7 @@
 <div class="container">
   <app-city-search />
   <app-city-weather-list />
+  @if (error()) {
+  <app-error-alert [alertText]="error()" />
+  }
 </div>
